@@ -57,6 +57,10 @@ public class CollisionDetector : MonoBehaviour
         float ballLeft = ball.GetComponent<Renderer>().bounds.min.x;
         float ballUp = ball.GetComponent<Renderer>().bounds.max.y;
         float ballDown = ball.GetComponent<Renderer>().bounds.min.y;
+        float ballCenter = ball.GetComponent<Renderer>().bounds.center.y;
+
+        float floorUp = floor.GetComponent<Renderer>().bounds.max.y;
+        float roofDown = roof.GetComponent<Renderer>().bounds.min.y;
 
         // Check if ball hits walls
         if (ballRight >= wallRight.GetComponent<Renderer>().bounds.min.x - 0.1f /* left side of right wall */ )
@@ -71,15 +75,48 @@ public class CollisionDetector : MonoBehaviour
         // Check if ball hits paddles
         if (ballRight >= paddleRight.GetComponent<Renderer>().bounds.min.x - 0.1f /* left side of right paddle */ )
         {
-            return "rightPaddle";
+            if (ballCenter == paddleRight.GetComponent<Renderer>().bounds.center.y)
+            {
+                return "rightCenter";
+            }
+            if (ballCenter >= paddleRight.GetComponent<Renderer>().bounds.center.y /* if ball hits pad in upper area */)
+            {
+                return "rightPaddleUp";
+            }
+            else
+            {
+                return "rightPaddleDown";
+            }
         }
         if (ballLeft <= paddleLeft.GetComponent<Renderer>().bounds.max.x + 0.1f /* right side of left paddle */ )
         {
-            return "leftPaddle";
+            if (ballCenter== paddleLeft.GetComponent<Renderer>().bounds.center.y)
+            {
+                return "leftCenter";
+            }
+            if (ballCenter >= paddleLeft.GetComponent<Renderer>().bounds.center.y /* if ball hits pad in upper area */)
+            {
+                return "leftPaddleUp";
+            }
+            else
+            {
+                return "leftPaddleDown";
+            }
+        }
+
+        // Check if ball hits roof/floor
+        if (ballUp >= roofDown - 0.1f )
+        {
+            return "roof";
+        }
+        if (ballDown <= floorUp + 0.1f)
+        {
+            return "floor";
         }
 
         return "none";
     }
+
 
     #region old
     //void Start()
